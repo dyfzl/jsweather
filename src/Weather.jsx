@@ -237,18 +237,12 @@ const hour = now.getHours();
 const isLateNight = hour >= 22 || hour < 4;
 
 // 날씨 UI 화면 컴포넌트
-function WeatherApp({ weather, timeOfDay }) {
-  const [showBirthday, setShowBirthday] = React.useState(false);
+
+function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
   const isLateNight = (() => {
     const hour = new Date().getHours();
     return hour >= 0 && hour < 6;
   })();
-
-  React.useEffect(() => {
-    const today = new Date();
-    const isJune6 = today.getMonth() === 5 && today.getDate() === 6;
-    setShowBirthday(isJune6);
-  }, []);
 
   if (showBirthday) {
     return (
@@ -263,23 +257,25 @@ function WeatherApp({ weather, timeOfDay }) {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          padding: "5vw",
+          padding: "0 5vw 5vw",
           boxSizing: "border-box",
           cursor: "pointer",
           WebkitFontSmoothing: "antialiased",
+          overflow: "hidden",
         }}
       >
         <img
           src="/birthday.png"
           alt="생일 축하"
           style={{
-            width: "70vw",
-            maxWidth: "400px",
-            height: "auto",
+            width: "100%",
+            maxWidth: "1440px",
+            height: "70vh",
             objectFit: "contain",
-            marginBottom: "4vw",
+            marginBottom: "1vh",
             userSelect: "none",
             pointerEvents: "none",
+            flexShrink: 0,
           }}
         />
         <p
@@ -292,6 +288,8 @@ function WeatherApp({ weather, timeOfDay }) {
             textShadow: "0 0 10px rgba(233, 30, 99, 0.9)",
             lineHeight: 1.1,
             margin: 0,
+            userSelect: "none",
+            flexShrink: 0,
           }}
         >
           🎉 누나 생일 축하해☺☺❤🎂
@@ -310,19 +308,20 @@ function WeatherApp({ weather, timeOfDay }) {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "#E6E6FA",
-          padding: "5vw",
+          padding: "0",
+          margin: "0",
           boxSizing: "border-box",
           WebkitFontSmoothing: "antialiased",
+          overflow: "hidden",
         }}
       >
         <img
           src="/find.png"
           alt="로딩 중"
           style={{
-            width: "60vw",
-            maxWidth: "350px",
-            height: "auto",
-            objectFit: "contain",
+            width: "100vw",
+            height: "100vh",
+            objectFit: "cover",
             userSelect: "none",
             pointerEvents: "none",
           }}
@@ -345,8 +344,8 @@ function WeatherApp({ weather, timeOfDay }) {
         WebkitFontSmoothing: "antialiased",
         overflow: "hidden",
         display: "flex",
-        justifyContent: "center", // 내부 컨테이너 가로 중앙 정렬
-        alignItems: "flex-start", // 필요 시 세로 정렬 조정 가능
+        justifyContent: "center",
+        alignItems: "flex-start",
       }}
     >
       <div
@@ -361,22 +360,6 @@ function WeatherApp({ weather, timeOfDay }) {
           userSelect: "none",
         }}
       >
-        {showBirthday && (
-          <p
-            style={{
-              fontSize: "5vw",
-              fontWeight: "bold",
-              color: "#fff",
-              marginBottom: "3vw",
-              fontFamily:
-                "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
-              lineHeight: 1.1,
-            }}
-          >
-            🎉 누나 생일 축하해☺☺❤🎂
-          </p>
-        )}
-
         {isLateNight && (
           <p
             style={{
@@ -458,7 +441,7 @@ function WeatherApp({ weather, timeOfDay }) {
           src={weather.imgSrc}
           alt="날씨 이미지"
           style={{
-            width: "100%", // 화면 너비 꽉 채우기
+            width: "100%",
             height: "auto",
             borderRadius: "10px",
             boxShadow: "none",
@@ -474,19 +457,24 @@ function WeatherApp({ weather, timeOfDay }) {
 function App() {
   const [weather, setWeather] = useState(null);
   const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay());
+  const [showBirthday, setShowBirthday] = useState(false);
 
+  // 6월 6일 여부 체크 및 초기 showBirthday 상태 설정
   useEffect(() => {
-    // 현재 위치 받아오기
+    const today = new Date();
+    setShowBirthday(today.getMonth() === 5 && today.getDate() === 6);
+  }, []);
+
+  // 날씨 요청 함수 분리
+  const fetchWeather = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const { latitude, longitude } = position.coords;
-
           try {
+            const { latitude, longitude } = position.coords;
             const response = await axios.get(
               `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
             );
-
             const data = response.data;
             const weatherId = data.weather[0].id;
 
@@ -508,18 +496,31 @@ function App() {
         }
       );
     }
-  }, []);
+  };
+
+  // showBirthday가 false가 될 때 날씨 재요청
+  useEffect(() => {
+    if (!showBirthday) {
+      fetchWeather();
+    }
+  }, [showBirthday]);
 
   // 시간대 변경 감지 (30분마다 갱신)
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeOfDay(getTimeOfDay());
     }, 30 * 60 * 1000);
-
     return () => clearInterval(interval);
   }, []);
 
-  return <WeatherApp weather={weather} timeOfDay={timeOfDay} />;
+  return (
+    <WeatherApp
+      weather={weather}
+      timeOfDay={timeOfDay}
+      showBirthday={showBirthday}
+      setShowBirthday={setShowBirthday}
+    />
+  );
 }
 
 export default App;
