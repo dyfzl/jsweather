@@ -8,12 +8,12 @@ const weatherDescKo = {
   201: "오늘 비랑 천둥친대 우산 챙겨어어ㅓ",
   202: "와 오늘 비 쏟아지고 천둥 쾅쾅이야;;",
   210: "천둥소리 들렸는데 좀 약하더라",
-  211: "천둥 구르는데 분위기 묘하네",
+  211: "헉 천둥친다",
   212: "천둥 미쳤다 진짜;;;",
   221: "천둥이 불규칙하게 와가지고 심장 놀람;;",
-  230: "흐릿한 연무에 천둥까지…묘하다",
-  231: "오늘은 연무랑 천둥 세트로 등장함",
-  232: "안개비랑 천둥이랑 같이 와서 분위기 미쳤다",
+  230: "안개 끼고 천둥까지 치다니..",
+  231: "안개 조심해애",
+  232: "으악 천둥친다..",
   300: "빗방울 살랑살랑 오는 느낌이야☺️",
   301: "잔잔하게 비 온다…☺️",
   302: "비 꽤 세게 와… 누나 우산 챙기세여",
@@ -44,20 +44,20 @@ const weatherDescKo = {
   621: "눈 소나기 왔다가 멈췄다가 반복 중",
   622: "눈 온다아아",
   701: "뿌옇다 오늘… 앞 잘 안 보여🥹",
-  711: "연기 낀 날은 숨쉬기 불편허다ㅠ",
+  711: "연기 낀 날은 보기 너무 불편허다ㅠ",
   721: "공기 질 좀 안 좋은 거 같지 않아?",
   731: "모래먼지 때문에 눈 뻑뻑해지는 느낌…",
   741: "오늘 안개 미쳤지???! 뭔가 영화 같긴 함",
-  751: "모래바람 불어서 눈감고 다녔다;;",
+  751: "모래바람 부니까 마스크 꼭꼭",
   761: "먼지 많으니까 마스크 꼭꼭",
   762: "화산재도 날리나봐…진짜 자연재해 많다 요즘",
   771: "돌풍이래 집에만 있어어어ㅓ",
   781: "토네이도…? 누나 조심해ㅜㅜ",
   800: "와 오늘 하늘 진짜 미쳤어😆",
   801: "오늘도 날씨 엄청 좋네히ㅎ",
-  802: "드문드문 구름 낀 하늘, 이런 하늘도 좋다",
-  803: "살짝 흐려도 기분은 좋네ㅎㅎ",
-  804: "완전 흐린데... 나쁘진 않다아아",
+  802: "드문드문 구름 낀 하늘도 좋다ㅎㅎㅎ",
+  803: "살짝 흐려..",
+  804: "좀 흐린데...",
   900: "토네이도라는데 진심 무섭다",
   901: "태풍 온다니까 누나 진짜 조심해요ㅜㅜ 제에에발…",
   902: "허리케인이라니ㅠㅠ 누나 진짜 조심해요ㅜㅜ 제에에발…",
@@ -78,156 +78,245 @@ const weatherDescKo = {
   962: "허리케인 주의보래ㅠㅠ 밖 절대 노노",
 };
 
-const hail = [511, 906]; // 우박
-
-// 바람 종류
-const windCalm = [951]; // 바람 거의 없음
-const windWeak = [952, 953]; // 약한 바람, 부드러운 바람
-const windModerate = [954, 955]; // 중간 세기 바람, 신선한 바람
-const windStrong = [956, 957, 958, 959]; // 센 바람, 돌풍에 가까운 센 바람, 돌풍, 심각한 돌풍
-const windStorm = [960, 961, 962]; // 폭풍, 강한 폭풍, 허리케인
-
-// 구름 상태
-const cloudsFew = [801, 802]; // 약간의 구름, 드문드문 구름
-const cloudsScattered = [803]; // 구름이 거의 없음
-const cloudsOvercast = [804]; // 흐린 하늘
-
-// 기타 (안개, 먼지 등)
-const fog = [701, 741]; // 박무, 안개
-const smoke = [711]; // 연기
-const dust = [731, 751, 761]; // 모래 먼지, 모래, 먼지
-const volcanicAsh = [762]; // 화산재
-const tornado = [781, 900]; // 토네이도
-const hurricane = [901, 902, 962]; // 태풍, 허리케인
-
-// 온도 관련
-const cold = [903]; // 한랭
-const hot = [904]; // 고온
-
-// 기타 특수 상태
-const windy = [905]; // 바람부는
-
-// 비
 const rainCodes = [
-  300, 301, 302, 310, 311, 312, 313, 314, 321, 500, 501, 502, 503, 504, 511,
-  520, 521, 522, 531,
+  300,
+  301,
+  302, // 이슬비
+  310,
+  311,
+  312,
+  313,
+  314,
+  321, // 가벼운 비 / 소나기
+  500,
+  501,
+  502,
+  503,
+  504, // 약한 비 ~ 매우 강한 비
+  511, // 비+눈 혹은 우박
+  520,
+  521,
+  522,
+  531, // 가벼운 소나기 ~ 강한 소나기
 ];
 
-//눈
-const snowCodes = [600, 601, 602, 611, 612, 615, 616, 620, 621, 622];
+const snowCodes = [
+  600,
+  601,
+  602, // 약한 눈 ~ 강한 눈
+  611,
+  612, // 진눈깨비
+  615,
+  616, // 눈 + 비
+  620,
+  621,
+  622, // 소나기 눈
+];
 
-// 천둥
-const thunderCodes = [200, 201, 202, 210, 211, 212, 221, 230, 231, 232];
+const disasterCodes = [
+  // 천둥번개
+  200, 201, 202, 210, 211, 212, 221, 230, 231, 232,
+  // 우박
+  511, 906,
+  // 화산재
+  762,
+  // 토네이도
+  781, 900,
+  // 태풍/허리케인
+  901, 902, 962,
+];
 
-// 이미지 랜덤 선택 함수
-function pickRandomImage(type) {
-  const images = {
-    rain: ["rain1.png", "rain2.png", "rain3.png"],
-    snow: ["snow1.png", "snow2.png", "snow3.png"],
-    thunder: ["thunder1.png", "thunder2.png", "thunder3.png"],
-  };
-  const arr = images[type] || ["default_weather.jpg"];
-  return arr[Math.floor(Math.random() * arr.length)];
+const windCodes = [
+  905, // 바람부는
+  956,
+  957,
+  958,
+  959, // 센 바람 ~ 심각한 돌풍
+  960,
+  961, // 폭풍, 강한 폭풍
+];
+
+const cloudyCodes = [
+  // 구름
+  801, 802, 803, 804,
+  // 안개/박무
+  701, 741,
+  // 연기
+  711,
+];
+
+const dustCodes = [731, 751, 761];
+const coldCodes = [903];
+const hotCodes = [904];
+
+// 랜덤 이미지 선택 함수
+function pickRandomSunnyImage() {
+  const sunnyImages = [
+    "/weather_images/sunny1.png",
+    "/weather_images/sunny2.png",
+    "/weather_images/sunny3.png",
+  ];
+  return sunnyImages[Math.floor(Math.random() * sunnyImages.length)];
 }
 
-// 날씨 코드에 따른 이미지 선택 함수
+// 날씨 코드 → 이미지 매핑 함수
 function getWeatherImage(weatherId) {
-  if (hail.includes(weatherId)) return "hail.png";
+  if (rainCodes.includes(weatherId)) {
+    return "/weather_images/rain.png";
+  }
 
-  if (windCalm.includes(weatherId)) return "default_weather.jpg";
-  if (windWeak.includes(weatherId)) return "default_weather.jpg";
-  if (windModerate.includes(weatherId)) return "default_weather.jpg";
-  if (windStrong.includes(weatherId)) return "default_weather.jpg";
-  if (windStorm.includes(weatherId)) return "wind_storm.png";
+  if (snowCodes.includes(weatherId)) {
+    return "/weather_images/snow.png";
+  }
 
-  if (cloudsFew.includes(weatherId)) return "clouds_few.png";
-  if (cloudsScattered.includes(weatherId)) return "clouds_scattered.png";
-  if (cloudsOvercast.includes(weatherId)) return "default_weather.jpg";
+  if (disasterCodes.includes(weatherId)) {
+    return "/weather_images/thunder.png"; // 우박, 태풍, 천둥, 화산재, 토네이도, 허리케인 포함
+  }
 
-  if (fog.includes(weatherId)) return "fog.png";
-  if (smoke.includes(weatherId)) return "smoke.png";
-  if (dust.includes(weatherId)) return "dust.png";
-  if (volcanicAsh.includes(weatherId)) return "volcanic_ash.png";
-  if (tornado.includes(weatherId)) return "tornado.png";
-  if (hurricane.includes(weatherId)) return "hurricane.png";
+  if (windCodes.includes(weatherId)) {
+    return "/weather_images/windy.png"; // 강한 바람 이상
+  }
 
-  if (cold.includes(weatherId)) return "cold.png";
-  if (hot.includes(weatherId)) return "hot.png";
+  if (cloudyCodes.includes(weatherId)) {
+    return "/weather_images/clouds.png"; // 구름, 안개, 연기
+  }
 
-  if (windy.includes(weatherId)) return "windy.png";
+  if (dustCodes.includes(weatherId)) {
+    return "/weather_images/dust.png";
+  }
 
-  if (rainCodes.includes(weatherId)) return pickRandomImage("rain");
-  if (snowCodes.includes(weatherId)) return pickRandomImage("snow");
-  if (thunderCodes.includes(weatherId)) return pickRandomImage("thunder");
+  if (coldCodes.includes(weatherId)) {
+    return "/weather_images/cold.png";
+  }
 
-  return "default_weather.jpg";
+  if (hotCodes.includes(weatherId)) {
+    return "/weather_images/hot.png";
+  }
+
+  if (weatherId === 800) {
+    return pickRandomSunnyImage(); // 맑은 날
+  }
+
+  // 정의되지 않은 코드일 경우 기본 이미지
+  return pickRandomSunnyImage();
 }
 
-function WeatherComponent() {
-  const [weather, setWeather] = useState(null);
-  const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay());
+// 시간 배경색 변경
+function getTimeOfDay() {
+  const hour = new Date().getHours();
+  if (hour >= 6 && hour < 12) return "morning";
+  if (hour >= 12 && hour < 20) return "afternoon";
+  return "evening";
+}
+
+const backgroundColors = {
+  morning: "#FFFAE5", // 연한 노란빛
+  afternoon: "#E5F4FF", // 맑은 하늘색
+  evening: "#2C3E50", // 짙은 남색 (밤)
+  gray: "#D3D3D3", // 흐림/비용 회색
+};
+
+function getBackgroundColor(weatherId, timeOfDay) {
+  const isGray =
+    (rainCodes.includes(weatherId) ||
+      cloudyCodes.includes(weatherId) ||
+      disasterCodes.includes(weatherId)) &&
+    timeOfDay !== "afternoon"; // 오후면 회색 아니게
+
+  return isGray ? backgroundColors.gray : backgroundColors[timeOfDay];
+}
+
+// 시간 조건 판단
+const now = new Date();
+const isBirthday = now.getMonth() === 5 && now.getDate() === 6;
+const hour = now.getHours();
+const isLateNight = hour >= 22 || hour < 4;
+
+// 날씨 UI 화면 컴포넌트
+function WeatherApp({ weather, timeOfDay }) {
+  const [showBirthday, setShowBirthday] = useState(false);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      try {
-        const res = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=ko`
-        );
-
-        const weatherId = res.data.weather[0].id;
-        const weatherKo =
-          weatherDescKo[weatherId] || res.data.weather[0].description;
-        const weatherIcon = res.data.weather[0].icon;
-        const weatherIconAdrs = `http://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
-        const temp = Math.round(res.data.main.temp);
-        const imgSrc = `/weather_images/${getWeatherImage(weatherId)}`;
-
-        setWeather({
-          description: weatherKo,
-          name: res.data.name,
-          temp: temp,
-          icon: weatherIconAdrs,
-          imgSrc,
-        });
-
-        // 현재 시간대 갱신
-        setTimeOfDay(getTimeOfDay());
-      } catch (err) {
-        console.error(err);
-      }
-    });
+    const today = new Date();
+    const isJune6 = today.getMonth() === 5 && today.getDate() === 6; // 6월 6일
+    setShowBirthday(isJune6);
   }, []);
 
-  const backgroundColors = {
-    morning: "#FFFAE5", // 연한 노란빛
-    afternoon: "#E5F4FF", // 맑은 하늘색
-    evening: "#2C3E50", // 짙은 남색 (밤)
-    gray: "#D3D3D3", // 흐림/비용 회색
-  };
-
-  // 배경색 변경
-  function getTimeOfDay() {
-    const hour = new Date().getHours();
-    if (hour >= 6 && hour < 12) return "morning";
-    if (hour >= 12 && hour < 18) return "afternoon";
-    return "evening";
+  if (showBirthday) {
+    return (
+      <div
+        onClick={() => setShowBirthday(false)} // 클릭 시 showBirthday false로 바꾸기
+        style={{
+          backgroundColor: "#fff",
+          height: "100vh",
+          width: "100vw",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          padding: "20px",
+          boxSizing: "border-box",
+          cursor: "pointer",
+        }}
+      >
+        <img
+          src="/birthday.png"
+          alt="생일 축하"
+          style={{
+            width: "80vw",
+            maxWidth: "400px",
+            height: "auto",
+            objectFit: "contain",
+            marginBottom: "20px",
+            userSelect: "none",
+            pointerEvents: "none",
+          }}
+        />
+        <p
+          style={{
+            fontSize: "26px",
+            fontWeight: "bold",
+            color: "#e91e63",
+            fontFamily:
+              "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+            textShadow: "0 0 8px rgba(233, 30, 99, 0.8)",
+          }}
+        >
+          🎉 누나 생일 축하해☺☺❤🎂
+        </p>
+      </div>
+    );
   }
 
-  function getBackgroundColor(weatherId, timeOfDay) {
-    const isRainy = rainCodes.includes(weatherId);
-    const thunderCodes = rainCodes.includes(weatherId);
-    const isCloudy = weatherId === 803;
-
-    if (isRainy || isCloudy || thunderCodes) {
-      return backgroundColors.gray;
-    }
-
-    return backgroundColors[timeOfDay];
+  if (!weather) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#E6E6FA",
+          padding: "20px",
+          boxSizing: "border-box",
+        }}
+      >
+        <img
+          src="/find.png"
+          alt="로딩 중"
+          style={{
+            width: "60vw",
+            maxWidth: "350px",
+            height: "auto",
+            objectFit: "contain",
+            userSelect: "none",
+            pointerEvents: "none",
+          }}
+        />
+      </div>
+    );
   }
-
-  if (!weather) return <p>Loading...</p>;
 
   const bgColor = getBackgroundColor(weather.id, timeOfDay);
 
@@ -236,61 +325,150 @@ function WeatherComponent() {
       style={{
         backgroundColor: bgColor,
         minHeight: "100vh",
-        padding: "20px",
+        padding: "40px 20px",
         transition: "background-color 0.5s ease",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        color: "#fff",
+        boxSizing: "border-box",
       }}
     >
+      {/* 6월 6일에만 상단 생일 축하 문구 같이 보여줌 (showBirthday 상태 이용) */}
+      {showBirthday && (
+        <p
+          style={{
+            fontSize: "22px",
+            fontWeight: "bold",
+            color: "#fff",
+            marginBottom: "6px",
+            fontFamily:
+              "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+          }}
+        >
+          🎉 누나 생일 축하해☺☺❤🎂
+        </p>
+      )}
+
+      {isLateNight && (
+        <p
+          style={{
+            fontSize: "20px",
+            color: "#fff",
+            marginBottom: "4px", // 기존 10px -> 4px로 줄임
+            lineHeight: "1.1", // 줄 간격 조절 추가
+            fontFamily:
+              "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+          }}
+        >
+          잘 자 까망 꿈 꿔🌙
+        </p>
+      )}
+
+      <h1 style={{ marginBottom: "6px", lineHeight: "1.15", fontSize: "28px" }}>
+        {weather.name}
+      </h1>
+
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
-          maxWidth: "400px",
-          margin: "0 auto",
-          background: "white",
-          borderRadius: "12px",
-          padding: "20px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          gap: "6px",
+          marginBottom: "2px",
         }}
       >
-        {/* 상단 정보 영역 */}
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <h1 style={{ margin: "5px 0" }}>{weather.name}</h1>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <img
-              src={weather.icon}
-              alt={weather.description}
-              style={{ width: "60px", height: "60px" }}
-            />
-            <p style={{ fontSize: "24px", margin: 0 }}>{weather.temp}°</p>
-          </div>
-
-          <p style={{ fontSize: "18px", margin: "5px 0" }}>
-            {weather.description}
-          </p>
-        </div>
-
-        {/* 사진 영역 */}
-        <div>
-          <img
-            src={weather.imgSrc}
-            alt="날씨 이미지"
-            style={{ width: "300px", height: "auto", borderRadius: "10px" }}
-          />
-        </div>
-
-        {/* 하단 영역 (원하는 경우 내용 추가 가능) */}
-        <div style={{ marginTop: "20px" }}>{/* 추가 정보 또는 버튼 등 */}</div>
+        <img
+          src={weather.icon}
+          alt={weather.description}
+          style={{
+            width: "60px",
+            height: "60px",
+            flexShrink: 0,
+          }}
+        />
+        <p style={{ fontSize: "26px", margin: 0 }}>{weather.temp}°</p>
       </div>
+
+      <p
+        style={{
+          fontSize: "18px",
+          marginBottom: "8px",
+          lineHeight: "1.2",
+          fontFamily:
+            "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+        }}
+      >
+        {weather.description}
+      </p>
+
+      <img
+        src={weather.imgSrc}
+        alt="날씨 이미지"
+        style={{
+          width: "100%",
+          maxWidth: "400px",
+          height: "auto",
+          borderRadius: "10px",
+          boxShadow: "none",
+          border: "none",
+          outline: "none",
+        }}
+      />
     </div>
   );
 }
 
-export default WeatherComponent;
+function App() {
+  const [weather, setWeather] = useState(null);
+  const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay());
+
+  useEffect(() => {
+    // 현재 위치 받아오기
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await axios.get(
+              `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
+            );
+
+            const data = response.data;
+            const weatherId = data.weather[0].id;
+
+            setWeather({
+              id: weatherId,
+              name: data.name,
+              temp: Math.round(data.main.temp),
+              icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+              description:
+                weatherDescKo[weatherId] || data.weather[0].description,
+              imgSrc: getWeatherImage(weatherId),
+            });
+          } catch (error) {
+            console.error("날씨 정보 가져오기 실패:", error);
+          }
+        },
+        (error) => {
+          console.error("위치 정보 가져오기 실패:", error);
+        }
+      );
+    }
+  }, []);
+
+  // 시간대 변경 감지 (30분마다 갱신)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeOfDay(getTimeOfDay());
+    }, 30 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return <WeatherApp weather={weather} timeOfDay={timeOfDay} />;
+}
+
+export default App;
