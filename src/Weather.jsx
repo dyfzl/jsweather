@@ -204,6 +204,7 @@ function getWeatherImage(weatherId) {
 // 시간 배경색 변경
 function getTimeOfDay() {
   const hour = new Date().getHours();
+
   if (hour >= 6 && hour < 12) return "morning";
   if (hour >= 12 && hour < 20) return "afternoon";
   return "evening";
@@ -217,12 +218,15 @@ const backgroundColors = {
 };
 
 function getBackgroundColor(weatherId, timeOfDay) {
+  const hour = new Date().getHours();
+  const isLateNight = hour >= 20 || hour < 5; // 20시부터 다음날 4시까지
+
   const isGray =
     (rainCodes.includes(weatherId) ||
       cloudyCodes.includes(weatherId) ||
       disasterCodes.includes(weatherId)) &&
-    timeOfDay !== "afternoon"; // 오후면 회색 아니게
-
+    timeOfDay !== "afternoon" && // 오후면 회색 아니게
+    !isLateNight; // 20시~4시는 회색 아니게 제외
   return isGray ? backgroundColors.gray : backgroundColors[timeOfDay];
 }
 
@@ -234,18 +238,22 @@ const isLateNight = hour >= 22 || hour < 4;
 
 // 날씨 UI 화면 컴포넌트
 function WeatherApp({ weather, timeOfDay }) {
-  const [showBirthday, setShowBirthday] = useState(false);
+  const [showBirthday, setShowBirthday] = React.useState(false);
+  const isLateNight = (() => {
+    const hour = new Date().getHours();
+    return hour >= 0 && hour < 6;
+  })();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const today = new Date();
-    const isJune6 = today.getMonth() === 5 && today.getDate() === 6; // 6월 6일
+    const isJune6 = today.getMonth() === 5 && today.getDate() === 6;
     setShowBirthday(isJune6);
   }, []);
 
   if (showBirthday) {
     return (
       <div
-        onClick={() => setShowBirthday(false)} // 클릭 시 showBirthday false로 바꾸기
+        onClick={() => setShowBirthday(false)}
         style={{
           backgroundColor: "#fff",
           height: "100vh",
@@ -255,32 +263,35 @@ function WeatherApp({ weather, timeOfDay }) {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          padding: "20px",
+          padding: "5vw",
           boxSizing: "border-box",
           cursor: "pointer",
+          WebkitFontSmoothing: "antialiased",
         }}
       >
         <img
           src="/birthday.png"
           alt="생일 축하"
           style={{
-            width: "80vw",
+            width: "70vw",
             maxWidth: "400px",
             height: "auto",
             objectFit: "contain",
-            marginBottom: "20px",
+            marginBottom: "4vw",
             userSelect: "none",
             pointerEvents: "none",
           }}
         />
         <p
           style={{
-            fontSize: "26px",
-            fontWeight: "bold",
+            fontSize: "6vw",
+            fontWeight: "900",
             color: "#e91e63",
             fontFamily:
               "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
-            textShadow: "0 0 8px rgba(233, 30, 99, 0.8)",
+            textShadow: "0 0 10px rgba(233, 30, 99, 0.9)",
+            lineHeight: 1.1,
+            margin: 0,
           }}
         >
           🎉 누나 생일 축하해☺☺❤🎂
@@ -294,12 +305,14 @@ function WeatherApp({ weather, timeOfDay }) {
       <div
         style={{
           minHeight: "100vh",
+          width: "100vw",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "#E6E6FA",
-          padding: "20px",
+          padding: "5vw",
           boxSizing: "border-box",
+          WebkitFontSmoothing: "antialiased",
         }}
       >
         <img
@@ -324,98 +337,136 @@ function WeatherApp({ weather, timeOfDay }) {
     <div
       style={{
         backgroundColor: bgColor,
-        minHeight: "100vh",
-        padding: "40px 20px",
+        height: "100vh",
+        width: "100vw",
+        padding: "5vw 5vw 7vw",
         transition: "background-color 0.5s ease",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-        color: "#fff",
         boxSizing: "border-box",
+        WebkitFontSmoothing: "antialiased",
+        overflow: "hidden",
+        display: "flex",
+        justifyContent: "center", // 내부 컨테이너 가로 중앙 정렬
+        alignItems: "flex-start", // 필요 시 세로 정렬 조정 가능
       }}
     >
-      {/* 6월 6일에만 상단 생일 축하 문구 같이 보여줌 (showBirthday 상태 이용) */}
-      {showBirthday && (
-        <p
-          style={{
-            fontSize: "22px",
-            fontWeight: "bold",
-            color: "#fff",
-            marginBottom: "6px",
-            fontFamily:
-              "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
-          }}
-        >
-          🎉 누나 생일 축하해☺☺❤🎂
-        </p>
-      )}
-
-      {isLateNight && (
-        <p
-          style={{
-            fontSize: "20px",
-            color: "#fff",
-            marginBottom: "4px", // 기존 10px -> 4px로 줄임
-            lineHeight: "1.1", // 줄 간격 조절 추가
-            fontFamily:
-              "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
-          }}
-        >
-          잘 자 까망 꿈 꿔🌙
-        </p>
-      )}
-
-      <h1 style={{ marginBottom: "6px", lineHeight: "1.15", fontSize: "28px" }}>
-        {weather.name}
-      </h1>
-
       <div
         style={{
+          width: "100%",
+          maxWidth: "1440px",
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
           alignItems: "center",
-          gap: "6px",
-          marginBottom: "2px",
+          textAlign: "center",
+          color: "#fff",
+          userSelect: "none",
         }}
       >
-        <img
-          src={weather.icon}
-          alt={weather.description}
+        {showBirthday && (
+          <p
+            style={{
+              fontSize: "5vw",
+              fontWeight: "bold",
+              color: "#fff",
+              marginBottom: "3vw",
+              fontFamily:
+                "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+              lineHeight: 1.1,
+            }}
+          >
+            🎉 누나 생일 축하해☺☺❤🎂
+          </p>
+        )}
+
+        {isLateNight && (
+          <p
+            style={{
+              fontSize: "4vw",
+              color: "#fff",
+              marginBottom: "2vw",
+              lineHeight: "1.1",
+              fontFamily:
+                "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+            }}
+          >
+            잘 장☺️ 까만 꿈 꿔
+          </p>
+        )}
+
+        <h1
           style={{
-            width: "60px",
-            height: "60px",
-            flexShrink: 0,
+            marginBottom: "2vw",
+            lineHeight: "1.15",
+            fontSize: "8vw",
+            fontWeight: "800",
+            letterSpacing: "0.03em",
+            textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
+            userSelect: "none",
+          }}
+        >
+          {weather.name}
+        </h1>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "3vw",
+            marginBottom: "3vw",
+            userSelect: "none",
+          }}
+        >
+          <img
+            src={weather.icon}
+            alt={weather.description}
+            style={{
+              width: "15vw",
+              height: "15vw",
+              minWidth: "60px",
+              minHeight: "60px",
+              flexShrink: 0,
+            }}
+          />
+          <p
+            style={{
+              fontSize: "10vw",
+              margin: 0,
+              fontWeight: "700",
+              letterSpacing: "-0.03em",
+              textShadow: "1px 1px 3px rgba(0,0,0,0.4)",
+            }}
+          >
+            {weather.temp}°
+          </p>
+        </div>
+
+        <p
+          style={{
+            fontSize: "5vw",
+            marginBottom: "4vw",
+            lineHeight: "1.2",
+            fontFamily:
+              "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+            userSelect: "none",
+            textShadow: "0 0 3px rgba(0,0,0,0.3)",
+          }}
+        >
+          {weather.description}
+        </p>
+
+        <img
+          src={weather.imgSrc}
+          alt="날씨 이미지"
+          style={{
+            width: "100%", // 화면 너비 꽉 채우기
+            height: "auto",
+            borderRadius: "10px",
+            boxShadow: "none",
+            border: "none",
+            outline: "none",
           }}
         />
-        <p style={{ fontSize: "26px", margin: 0 }}>{weather.temp}°</p>
       </div>
-
-      <p
-        style={{
-          fontSize: "18px",
-          marginBottom: "8px",
-          lineHeight: "1.2",
-          fontFamily:
-            "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
-        }}
-      >
-        {weather.description}
-      </p>
-
-      <img
-        src={weather.imgSrc}
-        alt="날씨 이미지"
-        style={{
-          width: "100%",
-          maxWidth: "400px",
-          height: "auto",
-          borderRadius: "10px",
-          boxShadow: "none",
-          border: "none",
-          outline: "none",
-        }}
-      />
     </div>
   );
 }
