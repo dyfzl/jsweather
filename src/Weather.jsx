@@ -257,27 +257,25 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          padding: "0 5vw 5vw",
+          padding: "0",
           boxSizing: "border-box",
           cursor: "pointer",
           WebkitFontSmoothing: "antialiased",
           overflow: "hidden",
         }}
       >
-        <img
-          src="/birthday.png"
-          alt="생일 축하"
+        <div
           style={{
             width: "100%",
             maxWidth: "1440px",
-            height: "70vh",
-            objectFit: "contain",
-            marginBottom: "1vh",
-            userSelect: "none",
-            pointerEvents: "none",
-            flexShrink: 0,
+            padding: "0 5vw",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
           }}
-        />
+        ></div>
         <p
           style={{
             fontSize: "6vw",
@@ -294,6 +292,20 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
         >
           🎉 누나 생일 축하해☺☺❤🎂
         </p>
+        <img
+          src="/birthday.png"
+          alt="생일 축하"
+          style={{
+            width: "100%",
+            maxWidth: "1440px",
+            height: "70vh",
+            objectFit: "contain",
+            marginBottom: "1vh",
+            userSelect: "none",
+            pointerEvents: "none",
+            flexShrink: 0,
+          }}
+        />
       </div>
     );
   }
@@ -302,7 +314,7 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
     return (
       <div
         style={{
-          minHeight: "100vh",
+          height: "100vh",
           width: "100vw",
           display: "flex",
           justifyContent: "center",
@@ -321,7 +333,7 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
           style={{
             width: "100vw",
             height: "100vh",
-            objectFit: "cover",
+            objectFit: "contain",
             userSelect: "none",
             pointerEvents: "none",
           }}
@@ -493,6 +505,11 @@ function App() {
         },
         (error) => {
           console.error("위치 정보 가져오기 실패:", error);
+        },
+        {
+          enableHighAccuracy: false, // 고정밀 GPS 비활성화 → Wi-Fi나 기지국 기반
+          timeout: 5000, // 최대 5초 내 응답 없으면 실패 처리
+          maximumAge: 0, // 캐시된 위치 정보는 사용하지 않음
         }
       );
     }
