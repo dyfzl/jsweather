@@ -32,6 +32,7 @@ function WeatherApp({
     ? getBackgroundColor(weather.id, timeOfDay, isLateNight)
     : "#E6E6FA";
 
+  // 생일 화면
   if (showBirthday) {
     return (
       <div
@@ -39,6 +40,7 @@ function WeatherApp({
         style={{
           backgroundColor: "#fff",
           height: "100vh",
+          minHeight: "100vh",
           width: "100vw",
           display: "flex",
           flexDirection: "column",
@@ -70,8 +72,8 @@ function WeatherApp({
           alt="생일 축하"
           style={{
             width: "100%",
-            maxWidth: "1440px",
-            height: "70vh",
+            maxWidth: "100vw",
+            maxHeight: "70vh",
             objectFit: "contain",
             marginBottom: "1vh",
             userSelect: "none",
@@ -82,11 +84,13 @@ function WeatherApp({
     );
   }
 
+  // 로딩 or 초기 화면
   if (!weather || !loadingDelayDone || !showWeatherUI) {
     return (
       <div
         style={{
           height: "100vh",
+          minHeight: "100vh",
           width: "100vw",
           display: "flex",
           justifyContent: "center",
@@ -112,13 +116,15 @@ function WeatherApp({
     );
   }
 
+  // 날씨 화면
   return (
     <div
       style={{
         backgroundColor: bgColor,
         height: "100vh",
+        minHeight: "100vh",
         width: "100vw",
-        padding: "5vw 5vw 7vw",
+        padding: "5vw",
         transition: "background-color 0.5s ease, opacity 0.5s ease",
         opacity: showWeatherUI ? 1 : 0,
         boxSizing: "border-box",
@@ -177,6 +183,7 @@ function WeatherApp({
             alignItems: "center",
             gap: "3vw",
             marginBottom: "3vw",
+            flexWrap: "wrap",
           }}
         >
           <img
@@ -188,6 +195,7 @@ function WeatherApp({
               minWidth: "60px",
               minHeight: "60px",
               flexShrink: 0,
+              objectFit: "contain",
             }}
           />
           <p
@@ -222,8 +230,10 @@ function WeatherApp({
           alt="날씨 이미지"
           style={{
             width: "100%",
+            maxWidth: "100vw",
             height: "auto",
             borderRadius: "10px",
+            objectFit: "contain",
           }}
         />
       </div>
