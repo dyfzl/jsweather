@@ -138,12 +138,14 @@ const windCodes = [
 
 const cloudyCodes = [
   // 구름
-  801, 802, 803, 804,
+  804,
   // 안개/박무
   701, 741,
   // 연기
   711,
 ];
+
+const sunnyCodes = [800, 801, 802, 803];
 
 const dustCodes = [731, 751, 761];
 const coldCodes = [903];
@@ -160,7 +162,12 @@ function pickRandomSunnyImage() {
 }
 
 // 날씨 코드 → 이미지 매핑 함수
-function getWeatherImage(weatherId) {
+function getWeatherImage(weatherId, clouds) {
+  if (clouds !== undefined && clouds <= 30) {
+    // 2, 3번 조건: 구름이 30 이하면 랜덤 맑은 이미지 반환
+    return pickRandomSunnyImage();
+  }
+
   if (rainCodes.includes(weatherId)) {
     return "/weather_images/rain.png";
   }
@@ -193,7 +200,7 @@ function getWeatherImage(weatherId) {
     return "/weather_images/hot.png";
   }
 
-  if (weatherId === 800) {
+  if (sunnyCodes.includes(weatherId)) {
     return pickRandomSunnyImage(); // 맑은 날
   }
 
@@ -204,10 +211,14 @@ function getWeatherImage(weatherId) {
 // 시간 배경색 변경
 function getTimeOfDay() {
   const hour = new Date().getHours();
-
   if (hour >= 6 && hour < 12) return "morning";
   if (hour >= 12 && hour < 20) return "afternoon";
   return "evening";
+}
+
+function isLateNightHour() {
+  const hour = new Date().getHours();
+  return hour >= 22 || hour < 4;
 }
 
 const backgroundColors = {
@@ -217,32 +228,40 @@ const backgroundColors = {
   gray: "#D3D3D3", // 흐림/비용 회색
 };
 
-function getBackgroundColor(weatherId, timeOfDay) {
-  const hour = new Date().getHours();
-  const isLateNight = hour >= 20 || hour < 5; // 20시부터 다음날 4시까지
-
+function getBackgroundColor(weatherId, timeOfDay, isLateNight) {
   const isGray =
     (rainCodes.includes(weatherId) ||
       cloudyCodes.includes(weatherId) ||
       disasterCodes.includes(weatherId)) &&
-    timeOfDay !== "afternoon" && // 오후면 회색 아니게
-    !isLateNight; // 20시~4시는 회색 아니게 제외
+    timeOfDay !== "evening" &&
+    !isLateNight;
+
   return isGray ? backgroundColors.gray : backgroundColors[timeOfDay];
 }
+
+const getDescriptionWithClouds = (weather) => {
+  const { id, clouds, description } = weather;
+  if ([804].includes(id)) {
+    if (clouds <= 30) {
+      return "구름은 좀 있지만 맑아서 너무 좋다아!";
+    }
+    return "";
+  }
+  return description;
+};
 
 // 시간 조건 판단
 const now = new Date();
 const isBirthday = now.getMonth() === 5 && now.getDate() === 6;
 const hour = now.getHours();
-const isLateNight = hour >= 22 || hour < 4;
 
 // 날씨 UI 화면 컴포넌트
 
 function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
-  const isLateNight = (() => {
-    const hour = new Date().getHours();
-    return hour >= 0 && hour < 6;
-  })();
+  const isLateNight = isLateNightHour(); // 공통 함수로 교체
+  const bgColor = weather
+    ? getBackgroundColor(weather.id, timeOfDay, isLateNight)
+    : "#E6E6FA";
 
   if (showBirthday) {
     return (
@@ -342,8 +361,6 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
     );
   }
 
-  const bgColor = getBackgroundColor(weather.id, timeOfDay);
-
   return (
     <div
       style={{
@@ -375,7 +392,7 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
         {isLateNight && (
           <p
             style={{
-              fontSize: "4vw",
+              fontSize: "clamp(16px, 4vw, 28px)",
               color: "#fff",
               marginBottom: "2vw",
               lineHeight: "1.1",
@@ -391,7 +408,7 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
           style={{
             marginBottom: "2vw",
             lineHeight: "1.15",
-            fontSize: "8vw",
+            fontSize: "clamp(32px, 8vw, 64px)",
             fontWeight: "800",
             letterSpacing: "0.03em",
             textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
@@ -424,7 +441,7 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
           />
           <p
             style={{
-              fontSize: "10vw",
+              fontSize: "clamp(28px, 10vw, 80px)",
               margin: 0,
               fontWeight: "700",
               letterSpacing: "-0.03em",
@@ -437,7 +454,7 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
 
         <p
           style={{
-            fontSize: "5vw",
+            fontSize: "clamp(16px, 5vw, 36px)",
             marginBottom: "4vw",
             lineHeight: "1.2",
             fontFamily:
@@ -446,7 +463,7 @@ function WeatherApp({ weather, timeOfDay, showBirthday, setShowBirthday }) {
             textShadow: "0 0 3px rgba(0,0,0,0.3)",
           }}
         >
-          {weather.description}
+          {getDescriptionWithClouds(weather)}
         </p>
 
         <img
@@ -470,6 +487,17 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay());
   const [showBirthday, setShowBirthday] = useState(false);
+
+  useEffect(() => {
+    // 홈 화면에서 실행된 경우 새로고침 (단 1회만)
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      const hasRefreshed = sessionStorage.getItem("hasRefreshed");
+      if (!hasRefreshed) {
+        sessionStorage.setItem("hasRefreshed", "true");
+        window.location.reload();
+      }
+    }
+  }, []);
 
   // 6월 6일 여부 체크 및 초기 showBirthday 상태 설정
   useEffect(() => {
@@ -498,6 +526,7 @@ function App() {
               description:
                 weatherDescKo[weatherId] || data.weather[0].description,
               imgSrc: getWeatherImage(weatherId),
+              clouds: data.clouds.all, // 구름 양 추가
             });
           } catch (error) {
             console.error("날씨 정보 가져오기 실패:", error);
