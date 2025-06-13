@@ -41,7 +41,8 @@ function WeatherApp({
           backgroundColor: "#fff",
           height: "100vh",
           minHeight: "100vh",
-          width: "100vw",
+          width: "100%",
+          maxWidth: "100vw",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -105,8 +106,10 @@ function WeatherApp({
           src="/find.png"
           alt="로딩 중"
           style={{
-            width: "100vw",
-            height: "100vh",
+            width: "100%",
+            maxWidth: "100vw",
+            height: "auto",
+            maxHeight: "100vh",
             objectFit: "contain",
             userSelect: "none",
             pointerEvents: "none",
@@ -124,7 +127,7 @@ function WeatherApp({
         height: "100vh",
         minHeight: "100vh",
         width: "100vw",
-        padding: "5vw",
+        padding: "5vh 0",
         transition: "background-color 0.5s ease, opacity 0.5s ease",
         opacity: showWeatherUI ? 1 : 0,
         boxSizing: "border-box",
