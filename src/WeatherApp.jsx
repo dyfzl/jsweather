@@ -40,7 +40,7 @@ function WeatherApp({
         style={{
           backgroundColor: "#fff",
           height: "100vh",
-          width: "100%",
+          width: "100vw",
           maxWidth: "100vw",
           display: "flex",
           flexDirection: "column",
@@ -72,8 +72,7 @@ function WeatherApp({
           src="/birthday.png"
           alt="생일 축하"
           style={{
-            width: "100%",
-            maxWidth: "100%",
+            width: "90vw",
             height: "auto",
             maxHeight: "70vh",
             objectFit: "contain",
@@ -92,7 +91,7 @@ function WeatherApp({
       <div
         style={{
           height: "100vh",
-          width: "100%",
+          width: "100vw",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -106,8 +105,7 @@ function WeatherApp({
           src="/find.png"
           alt="로딩 중"
           style={{
-            width: "100%",
-            maxWidth: "100%",
+            width: "90vw",
             height: "auto",
             maxHeight: "100vh",
             objectFit: "contain",
@@ -125,8 +123,8 @@ function WeatherApp({
       style={{
         backgroundColor: bgColor,
         height: "100vh",
-        width: "100%",
-        padding: "5vh 0",
+        width: "100vw", // 전체 뷰포트 가로 채움
+        padding: "3vh 0",
         transition: "background-color 0.5s ease, opacity 0.5s ease",
         opacity: showWeatherUI ? 1 : 0,
         boxSizing: "border-box",
@@ -141,7 +139,6 @@ function WeatherApp({
       <div
         style={{
           width: "100%",
-          maxWidth: "1440px",
           padding: "0 5vw",
           display: "flex",
           flexDirection: "column",
@@ -186,8 +183,8 @@ function WeatherApp({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: "5vw",
-            marginBottom: "3vw",
+            gap: "4vw",
+            marginBottom: "2vw",
             flexWrap: "wrap",
             boxSizing: "border-box",
             maxWidth: "100%",
@@ -197,8 +194,8 @@ function WeatherApp({
             src={weather.icon}
             alt={weather.description}
             style={{
-              width: "15vw",
-              height: "15vw",
+              width: "20vw",
+              height: "20vw",
               minWidth: "60px",
               minHeight: "60px",
               flexShrink: 0,
@@ -236,8 +233,7 @@ function WeatherApp({
           src={weather.imgSrc}
           alt="날씨 이미지"
           style={{
-            width: "100%",
-            maxWidth: "100vw",
+            width: "90vw",
             height: "auto",
             borderRadius: "10px",
             objectFit: "contain",
