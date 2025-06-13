@@ -40,7 +40,6 @@ function WeatherApp({
         style={{
           backgroundColor: "#fff",
           height: "100vh",
-          minHeight: "100vh",
           width: "100%",
           maxWidth: "100vw",
           display: "flex",
@@ -51,6 +50,7 @@ function WeatherApp({
           cursor: "pointer",
           WebkitFontSmoothing: "antialiased",
           overflow: "hidden",
+          boxSizing: "border-box",
         }}
       >
         <p
@@ -73,7 +73,8 @@ function WeatherApp({
           alt="생일 축하"
           style={{
             width: "100%",
-            maxWidth: "100vw",
+            maxWidth: "100%",
+            height: "auto",
             maxHeight: "70vh",
             objectFit: "contain",
             marginBottom: "1vh",
@@ -91,8 +92,7 @@ function WeatherApp({
       <div
         style={{
           height: "100vh",
-          minHeight: "100vh",
-          width: "100vw",
+          width: "100%",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -107,7 +107,7 @@ function WeatherApp({
           alt="로딩 중"
           style={{
             width: "100%",
-            maxWidth: "100vw",
+            maxWidth: "100%",
             height: "auto",
             maxHeight: "100vh",
             objectFit: "contain",
@@ -125,14 +125,14 @@ function WeatherApp({
       style={{
         backgroundColor: bgColor,
         height: "100vh",
-        minHeight: "100vh",
-        width: "100vw",
+        width: "100%",
         padding: "5vh 0",
         transition: "background-color 0.5s ease, opacity 0.5s ease",
         opacity: showWeatherUI ? 1 : 0,
         boxSizing: "border-box",
         WebkitFontSmoothing: "antialiased",
-        overflow: "hidden",
+        overflowX: "hidden",
+        overflowY: "hidden",
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
@@ -142,12 +142,14 @@ function WeatherApp({
         style={{
           width: "100%",
           maxWidth: "1440px",
+          padding: "0 5vw",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           textAlign: "center",
           color: "#fff",
           userSelect: "none",
+          boxSizing: "border-box",
         }}
       >
         {isLateNight && (
@@ -184,9 +186,11 @@ function WeatherApp({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: "3vw",
+            gap: "5vw",
             marginBottom: "3vw",
             flexWrap: "wrap",
+            boxSizing: "border-box",
+            maxWidth: "100%",
           }}
         >
           <img
